@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import Game from "./Game";
+import MyRouter from "./MyRouter";
 
 function App() {
   return (
     <div>
-      <Game></Game>
+      <MyRouter></MyRouter>
     </div>
   );
 }

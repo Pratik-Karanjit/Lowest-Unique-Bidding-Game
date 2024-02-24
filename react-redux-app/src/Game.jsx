@@ -1,24 +1,67 @@
 import React, { useState } from "react";
+import { Formik, Form, ErrorMessage } from "formik";
+import * as yup from "yup";
+import axios from "axios";
 
 const Game = () => {
-  let [value, setValue] = useState();
-  let [message, setMessage] = useState("");
-  let isValid = value >= 0;
+  let initialValues = {
+    lubInput: "",
+  };
+
+  let onSubmit = async (info) => {
+    try {
+      let result = await axios({
+        url: `http://localhost:8000/users`,
+        method: "post",
+        data: info,
+      });
+    } catch (error) {
+      console.log("unable to function.");
+    }
+  };
+
+  const validationSchema = yup.object().shape({
+    lubInput: yup
+      .number()
+      .typeError("Must be a number")
+      .required("LUB Amount is required")
+      .positive("LUB Amount must be a positive number")
+      .min(0.01, "The number must be greater than or equal to 0.01"),
+  });
 
   return (
     <div>
-      <label>
-        Enter any number between 0 and 10 <br></br>
-        <input
-          type="number"
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-        ></input>
-      </label>
-      <p>{isValid ? "The number is valid." : "The number is not valid."}</p>
-      <button>Submit</button>
+      <h1>Your LUB Amount</h1>
+      <h2>Enter your LUB amount below (Amount is in Rs.)</h2>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={validationSchema}
+      >
+        {(formik) => {
+          return (
+            <Form>
+              <div>
+                <input
+                  type="number"
+                  placeholder="LUB Amount"
+                  id="lubInput"
+                  {...formik.getFieldProps("lubInput")}
+                  required
+                />
+                {/* <p>{lubInput === 0 ? "Wow" : "not wow"}</p> */}
+              </div>
+              <ErrorMessage
+                name="lubInput"
+                component="div"
+                className="error-message"
+              />
+
+              <button type="submit">Submit</button>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
