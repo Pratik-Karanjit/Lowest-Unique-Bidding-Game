@@ -23,7 +23,8 @@ body {
   background-color: var(--background);
 }
 
-.main-wrapper h1 {
+.main-wrapper h1,
+.create-section h1 {
   color: var(--primary-dark);
   font-weight: 600;
   font-size: 1.5rem;
