@@ -24,7 +24,6 @@ const Game = () => {
     lubInput: yup
       .number()
       .typeError("Must be a number")
-      .required("LUB Amount is required")
       .positive("LUB Amount must be a positive number")
       .min(0.01, "The number must be greater than or equal to 0.01"),
   });
@@ -72,7 +71,7 @@ const Game = () => {
                       </label>
                     </div>
                     <div className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer">
-                      <p className="font-medium text-white">Submit</p>
+                      <button className="font-medium text-white">Submit</button>
                     </div>
                   </div>
                 </Form>
