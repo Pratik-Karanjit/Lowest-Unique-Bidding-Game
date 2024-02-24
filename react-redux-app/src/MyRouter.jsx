@@ -3,16 +3,18 @@ import CreateAccount from "./CreateAccount";
 import Game from "./Game";
 import { Routes, Route, Outlet } from "react-router-dom";
 import RegistrationSuccess from "./RegistrationSuccess";
+import NavBar from "./Navbar";
+import Content from "./Content";
 
 const MyRouter = () => {
   return (
-    <div>
+    <div className="bg-off-white h-screen">
       <Routes>
         <Route
           path="/"
           element={
             <div>
-              {/* <NavBar></NavBar> */}
+              <NavBar></NavBar>
               <Outlet></Outlet>
             </div>
           }
