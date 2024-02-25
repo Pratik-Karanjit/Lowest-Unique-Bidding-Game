@@ -4,7 +4,12 @@ import Game from "./Game";
 import { Routes, Route, Outlet } from "react-router-dom";
 import RegistrationSuccess from "./RegistrationSuccess";
 import NavBar from "./Navbar";
-import Content from "./Content";
+import ErrorPage from "./ErrorPage";
+import CreateLogin from "./CreateLogin";
+import VerifyEmail from "./VerifyEmail";
+import VerifyEmailPage from "./VerifyEmail";
+import AdminLogin from "./AdminLogin";
+import AdminPanel from "./AdminPanel";
 
 const MyRouter = () => {
   return (
@@ -25,12 +30,23 @@ const MyRouter = () => {
             path="create"
             element={<CreateAccount></CreateAccount>}
           ></Route>
+
+          <Route path="login" element={<CreateLogin></CreateLogin>}></Route>
+          <Route path="adminLogin" element={<AdminLogin></AdminLogin>}></Route>
+          <Route path="adminPanel" element={<AdminPanel></AdminPanel>}></Route>
           <Route
             path="registration-success"
             element={<RegistrationSuccess></RegistrationSuccess>}
           />
-          {/* <Route path="verify" element={<VerifyEmail></VerifyEmail>}></Route>
-          <Route path="login" element={<CreateLogin></CreateLogin>}></Route>
+          <Route path="*" element={<ErrorPage />} />
+          <Route path="verify" element={<VerifyEmail></VerifyEmail>}></Route>
+          <Route
+            path="verify-email"
+            element={<VerifyEmailPage />}
+            querystring
+          />
+
+          {/* <Route path="login" element={<CreateLogin></CreateLogin>}></Route>
           <Route
             path="logout"
             element={<LogoutAccount></LogoutAccount>}

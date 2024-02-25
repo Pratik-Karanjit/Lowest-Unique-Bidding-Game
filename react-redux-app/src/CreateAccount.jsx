@@ -153,64 +153,6 @@ const CreateAccount = () => {
           }}
         </Formik>
       </div>
-
-      {/* LOGIN PAGE CONTENT */}
-      <div className="bg-white w-2/5 p-10 rounded-md shadow-sm">
-        <h1>Log In</h1>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-        >
-          {(formik) => {
-            return (
-              <Form>
-                <div className="flex flex-wrap">
-                  <label className="w-full mt-4" htmlFor="userName">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
-                    id="userName"
-                    {...formik.getFieldProps("userName")}
-                    required
-                  />
-                </div>
-                <ErrorMessage
-                  name="userName"
-                  component="div"
-                  className="error-message text-sm text-red-600"
-                />
-
-                <div className="flex flex-wrap">
-                  <label className="w-full mt-4" htmlFor="password">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
-                    id="password"
-                    {...formik.getFieldProps("password")}
-                    required
-                  />
-                </div>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="error-message text-sm text-red-600"
-                />
-
-                <div className="mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer  text-center">
-                  <button className="font-medium text-white" type="submit">
-                    Log In
-                  </button>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
     </div>
   );
 };
