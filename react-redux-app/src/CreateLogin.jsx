@@ -5,13 +5,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { login, selectUser } from "./features/userSlice";
+import { loginUser } from "./features/userSlice";
 
 const CreateLogin = () => {
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
 
   const initialValues = {
     userName: "",
@@ -26,7 +25,8 @@ const CreateLogin = () => {
       );
       const token = response.data.token;
       const userName = response.data.userName;
-      dispatch(login({ token, userName }));
+      const role = response.data.role;
+      dispatch(loginUser({ token, userName, role }));
       navigate("/");
     } catch (error) {
       console.log("Unable to submit:", error);

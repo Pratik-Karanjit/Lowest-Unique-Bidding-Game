@@ -4,11 +4,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { setLoginInfo } from "./utils/loginInfo";
+import { loginAdmin } from "./features/userSlice";
+import { useDispatch } from "react-redux";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState(false);
+  let dispatch = useDispatch();
 
   const initialValues = {
     userName: "",
@@ -22,7 +24,8 @@ const AdminLogin = () => {
         values
       );
       const token = response.data.token;
-      setLoginInfo({ token });
+      const role = response.data.role;
+      dispatch(loginAdmin({ token, role }));
       navigate("/adminPanel");
     } catch (error) {
       console.log("Unable to submit:", error);
