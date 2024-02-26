@@ -70,9 +70,9 @@ const Game = () => {
                         Currency
                       </label>
                     </div>
-                    <div className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer">
-                      <button className="font-medium text-white">Submit</button>
-                    </div>
+                    <button className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white">
+                      Submit
+                    </button>
                   </div>
                 </Form>
               );
