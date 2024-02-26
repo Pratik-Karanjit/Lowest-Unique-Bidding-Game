@@ -52,7 +52,7 @@ const AdminLogin = () => {
   return (
     <div className="create-section p-7 flex justify-center align-center">
       <div className="bg-white w-2/5 p-10 rounded-md shadow-sm">
-        <h1>ADMIN LOGIN &&&&&&&&&&&&&&&&</h1>
+        <h1>Admin Log In</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
@@ -96,11 +96,12 @@ const AdminLogin = () => {
                 className="error-message text-sm text-red-600"
               />
 
-              <div className="mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer  text-center">
-                <button className="font-medium text-white" type="submit">
-                  Log In
-                </button>
-              </div>
+              <button
+                className="font-medium text-white mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer text-center"
+                type="submit"
+              >
+                Log In
+              </button>
             </Form>
           )}
         </Formik>
