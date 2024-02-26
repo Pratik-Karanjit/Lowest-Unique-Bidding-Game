@@ -97,11 +97,12 @@ const CreateLogin = () => {
                 className="error-message text-sm text-red-600"
               />
 
-              <div className="mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer  text-center">
-                <button className="font-medium text-white" type="submit">
-                  Log In
-                </button>
-              </div>
+              <button
+                className="mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer text-center font-medium text-white"
+                type="submit"
+              >
+                Log In
+              </button>
             </Form>
           )}
         </Formik>

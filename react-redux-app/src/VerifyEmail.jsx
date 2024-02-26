@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Verify from "../src/images/verifyEmailIcon.png";
 
 const VerifyEmailPage = () => {
   const navigate = useNavigate();
@@ -43,15 +44,18 @@ const VerifyEmailPage = () => {
   };
 
   return (
-    <div className="verify-email-container">
-      <h1 className="verify-email-title">Email Verification Page</h1>
-      <p className="verify-email-status">{verificationStatus}</p>
-      <button
-        onClick={() => navigate("/login")}
-        className="verify-email-button"
-      >
-        Login
-      </button>
+    <div className="create-section p-7 flex justify-center align-center">
+      <div className="bg-white w-2/5 p-10 rounded-md shadow-sm text-center flex flex-col justify-center items-center gap-6">
+        <img src={Verify} class="h-24 w-24" alt="LUB Logo" />
+        <h1>Email Verification Page</h1>
+        <p>{verificationStatus}</p>
+        <button
+          onClick={() => navigate("/login")}
+          className="verify-email-button mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer text-center font-medium text-white"
+        >
+          Login
+        </button>
+      </div>
     </div>
   );
 };
