@@ -12,11 +12,16 @@
   --secondary-light: #3fe695;
   --secondary-dark: #006b38;
   --background: #f9f6ff;
+  --textGrey: #3c3c3c;
 }
 
 html,
 body {
   font-family: "Rubik", sans-serif;
+}
+
+p {
+  color: var(--textGrey) !important;
 }
 
 .bg-off-white {
@@ -45,4 +50,12 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.text-secondary {
+  color: var(--secondary) !important;
+}
+
+.text-black {
+  color: #000000 !important;
 }

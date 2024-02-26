@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import Product from "../src/images/product1.png";
 
 const Game = () => {
   let initialValues = {
@@ -79,9 +80,45 @@ const Game = () => {
             }}
           </Formik>
         </div>
-        <div className="h-72 w-full rounded-lg p-6 bg-white">
-          <h1>Product on Auction</h1>
-          <p className="font-medium text-textGrey">Apple iPhone 15 Pro Max</p>
+        <div className="flex flex-row justify-between w-full rounded-lg p-8 bg-white shadow-sm">
+          <div className="flex flex-col justify-between">
+            <div>
+              <h1 className="text-secondary">Product on Auction</h1>
+              <p className="font-medium text-textGrey">
+                Apple iPhone 15 Pro Max
+              </p>
+            </div>
+            <h1 className="text-black">Worth Rs. 2,00,000</h1>
+            <div>
+              <h1>Time Remaining</h1>
+              <p className="font-medium text-textGrey">
+                3 days 21 hours 13 minutes
+              </p>
+            </div>
+          </div>
+          <img src={Product} class="h-62" alt="LUB Logo" />
+        </div>
+      </div>
+
+      <div className="bg-white w-full my-5 p-6 rounded-md shadow-sm flex flex-col gap-6">
+        <p>
+          <span className="text-primaryDark font-bold">Congratulations!</span>{" "}
+          Your bid of Rs. 2.01 is the <b>NEW LUB</b> as it is lower than the
+          current LUB and is unique!
+        </p>
+      </div>
+
+      <div className="bg-white w-full p-6 my-5 rounded-md shadow-sm flex flex-col gap-6">
+        <h2 className="font-bold text-primaryDark">Bid History</h2>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-row justify-between py-3 px-4 bg-background rounded-md">
+            <p>You bid Rs. 0.98 which was not the LUB.</p>
+            <p>23/02/2024 5:43PM</p>
+          </div>
+          <div className="flex flex-row justify-between py-3 px-4 bg-background rounded-md">
+            <p>You bid Rs. 0.98 which was not the LUB.</p>
+            <p>23/02/2024 5:43PM</p>
+          </div>
         </div>
       </div>
     </div>
