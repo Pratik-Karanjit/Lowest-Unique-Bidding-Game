@@ -107,8 +107,14 @@ export let loginUser = expressAsyncHandler(async (req, res, next) => {
         };
         let token = await generateToken(infoObj, expireInfo);
         await Token.create({ token });
-        res.json({ token });
-        successResponse(res, HttpStatus.CREATED, "Login Successfully", token);
+        res.json({ token, userName, role: data.role });
+        successResponse(
+          res,
+          HttpStatus.CREATED,
+          "Login Successfully",
+          token,
+          userName
+        );
       }
     }
   }
@@ -131,7 +137,7 @@ export let loginAdmin = expressAsyncHandler(async (req, res, next) => {
     };
     let token = await generateToken(infoObj, expireInfo);
     await Token.create({ token });
-    res.json({ token });
+    res.json({ token, role: infoObj.role });
     successResponse(res, HttpStatus.CREATED, "Login Successfully", token);
   } else {
     let error = new Error("Credentials don't match");
