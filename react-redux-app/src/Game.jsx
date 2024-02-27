@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as yup from "yup";
 import axios from "axios";
@@ -28,6 +28,21 @@ const Game = () => {
       .positive("LUB Amount must be a positive number")
       .min(0.01, "The number must be greater than or equal to 0.01"),
   });
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/users/products");
+      console.log("API Response:", response.data);
+      setProducts(response.data.result);
+      setFilteredProducts(response.data.result);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   return (
     <div className="main-wrapper p-7">

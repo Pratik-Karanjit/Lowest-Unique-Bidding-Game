@@ -1,6 +1,6 @@
 import { HttpStatus, baseUrl } from "../config/constant.js";
 import successResponse from "../helper/successResponse.js";
-import { Token, User } from "../schema/model.js";
+import { Product, Token, User } from "../schema/model.js";
 import expressAsyncHandler from "express-async-handler";
 import { sendMail } from "../utils/sendMail.js";
 import { comparePassword, hashPassword } from "../utils/hashing.js";
@@ -151,4 +151,50 @@ export let logout = expressAsyncHandler(async (req, res, next) => {
   console.log(tokenId);
   let result = await Token.findByIdAndDelete(tokenId);
   successResponse(res, HttpStatus.OK, "logout successfully", result);
+});
+
+export let logoutAdmin = expressAsyncHandler(async (req, res, next) => {
+  let tokenId = req.token.tokenId;
+  console.log(tokenId);
+  let result = await Token.findByIdAndDelete(tokenId);
+  successResponse(res, HttpStatus.OK, "Admin logged out successfully", result);
+});
+
+export let createProduct = expressAsyncHandler(async (req, res, next) => {
+  const { title, price, time } = req.body;
+
+  try {
+    const newProduct = await Product.create({
+      title,
+      price,
+      time,
+    });
+    successResponse(
+      res,
+      HttpStatus.CREATED,
+      "Product created successfully",
+      newProduct
+    );
+  } catch (error) {
+    console.log("Error creating product", error);
+  }
+});
+
+export const getAllProducts = expressAsyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    successResponse(
+      res,
+      HttpStatus.OK,
+      "Products fetched successfully",
+      products
+    );
+  } catch (error) {
+    errorResponse(
+      res,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Error fetching products"
+    );
+  }
 });
