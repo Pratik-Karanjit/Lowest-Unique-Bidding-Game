@@ -145,3 +145,10 @@ export let loginAdmin = expressAsyncHandler(async (req, res, next) => {
     throw error;
   }
 });
+
+export let logout = expressAsyncHandler(async (req, res, next) => {
+  let tokenId = req.token.tokenId;
+  console.log(tokenId);
+  let result = await Token.findByIdAndDelete(tokenId);
+  successResponse(res, HttpStatus.OK, "logout successfully", result);
+});

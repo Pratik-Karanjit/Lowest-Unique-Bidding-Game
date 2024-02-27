@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "./features/userSlice";
+import { setLoginInfo } from "./utils/loginInfo";
 
 const CreateLogin = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ const CreateLogin = () => {
       const userName = response.data.userName;
       const role = response.data.role;
       dispatch(loginUser({ token, userName, role }));
+      setLoginInfo({ token });
+
       navigate("/");
     } catch (error) {
       console.log("Unable to submit:", error);

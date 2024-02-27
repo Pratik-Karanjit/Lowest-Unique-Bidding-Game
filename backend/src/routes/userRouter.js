@@ -3,6 +3,7 @@ import {
   createUser,
   loginAdmin,
   loginUser,
+  logout,
   verifyEmail,
 } from "../controller/userController.js";
 import isAuthenticatedForEmail from "../middleware/isAuthenticatedForEmail.js";
@@ -18,6 +19,8 @@ userRouter.route("/verify-email").post(isAuthenticatedForEmail, verifyEmail);
 userRouter.route("/login").post(loginUser);
 
 userRouter.route("/adminLogin").post(loginAdmin);
+
+userRouter.route("/logout").delete(isAuthenticatedForEmail, logout);
 
 // userRouter.route("/logout").delete(isAuthenticatedForEmail, logout);
 
