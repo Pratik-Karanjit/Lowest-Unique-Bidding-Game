@@ -5,6 +5,9 @@ import axios from "axios";
 import Product from "../src/images/product1.png";
 
 const Game = () => {
+  const [products, setProducts] = useState([]);
+  const [remainingTime, setRemainingTime] = useState("");
+
   let initialValues = {
     lubInput: "",
   };
@@ -38,9 +41,71 @@ const Game = () => {
       const response = await axios.get("http://localhost:8000/users/products");
       console.log("API Response:", response.data);
       setProducts(response.data.result);
-      setFilteredProducts(response.data.result);
+
+      // Start the countdown timer of the first product's time
+      if (response.data.result.length > 0) {
+        startCountdown(response.data.result[0].time);
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+
+  const startCountdown = (time) => {
+    // Extract the number of days from the 'time' field
+    const days = parseInt(time);
+
+    // Calculate the end time by adding the days to the current date
+    const endDateTime = new Date();
+    endDateTime.setDate(endDateTime.getDate() + days);
+
+    // Update the remaining time every second
+    const intervalId = setInterval(() => {
+      const now = new Date().getTime();
+      const timeDifference = endDateTime - now;
+
+      if (timeDifference > 0) {
+        // Format the remaining time as per your requirement
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+        setRemainingTime(
+          `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`
+        );
+      } else {
+        // Stop the countdown when time is up
+        clearInterval(intervalId);
+        setRemainingTime("Auction Ended");
+      }
+    }, 1000);
+  };
+
+  //Function to extract the response data and show it in user panel
+  const renderProductInfo = () => {
+    if (products.length > 0) {
+      const product = products[0]; // Assuming there's only one product in the array
+
+      return (
+        <>
+          <div>
+            <h1 className="text-secondary">Product on Auction</h1>
+            <p className="font-medium text-textGrey">{product.title}</p>
+          </div>
+          <h1 className="text-black">Worth Rs. {product.price}</h1>
+          <div>
+            <h1>Time Remaining</h1>
+            <p className="font-medium text-textGrey">{remainingTime}</p>
+          </div>
+        </>
+      );
+    } else {
+      return null; // Handle the case when there are no products
     }
   };
 
@@ -97,7 +162,8 @@ const Game = () => {
         </div>
         <div className="flex flex-row justify-between w-full rounded-lg p-8 bg-white shadow-sm">
           <div className="flex flex-col justify-between">
-            <div>
+            {renderProductInfo()}
+            {/* <div>
               <h1 className="text-secondary">Product on Auction</h1>
               <p className="font-medium text-textGrey">
                 Apple iPhone 15 Pro Max
@@ -109,7 +175,7 @@ const Game = () => {
               <p className="font-medium text-textGrey">
                 3 days 21 hours 13 minutes
               </p>
-            </div>
+            </div> */}
           </div>
           <img src={Product} class="h-62" alt="LUB Logo" />
         </div>
