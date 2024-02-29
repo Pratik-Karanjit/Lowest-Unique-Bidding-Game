@@ -11,6 +11,7 @@ import VerifyEmail from "./VerifyEmail";
 import VerifyEmailPage from "./VerifyEmail";
 import AdminLogin from "./AdminLogin";
 import AdminPanel from "./AdminPanel.jsx";
+import ImageSend from "./ImageSend.jsx";
 
 const MyRouter = () => {
   // Use the useSelector hook to get the user's role from the Redux state
@@ -19,14 +20,14 @@ const MyRouter = () => {
 
   //To see user's role
   const roleOfUser = userRole && userRole.role;
-  console.log("userRole", roleOfUser);
+  // console.log("userRole", roleOfUser);
 
   //To see admin's role
-  console.log("adminRole", adminRole);
+  // console.log("adminRole", adminRole);
 
   //Extract role only
   const extractedRole = adminRole && adminRole.role;
-  console.log("******", extractedRole);
+  // console.log("******", extractedRole);
 
   return (
     <div className="bg-off-white h-screen">
@@ -44,6 +45,7 @@ const MyRouter = () => {
           <Route path="create" element={<CreateAccount />} />
           <Route path="login" element={<CreateLogin />} />
           <Route path="adminLogin" element={<AdminLogin />} />
+          <Route path="uploadImage" element={<ImageSend />} />
 
           {extractedRole === "admin" && (
             <Route path="adminPanel" element={<AdminPanel />} />

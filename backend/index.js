@@ -3,19 +3,20 @@ import { port } from "./src/config/constant.js";
 import cors from "cors";
 import connectDb from "./src/connectdb/connectdb.js";
 import userRouter from "./src/routes/userRouter.js";
+import fileRouter from "./src/routes/fileRouter.js";
 
 let app = express();
 
 app.use(json());
 
 app.use(cors());
+app.use("/files", fileRouter);
+
 app.use("/users", userRouter);
 
 connectDb();
 
 app.use(express.static("./public"));
-
-// app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`app is listening at port ${port}`);

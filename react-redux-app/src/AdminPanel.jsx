@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,12 +9,19 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 const AdminPanel = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [file, setFile] = useState(null);
+
   const admin = useSelector((state) => state.user.admin?.token);
 
   const initialValues = {
     title: "",
     price: "",
     time: "",
+    image: null,
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
   };
 
   const onSubmit = async (info) => {
@@ -85,6 +92,11 @@ const AdminPanel = () => {
             <Field type="text" name="time" />
           </div>
           <ErrorMessage name="time" component="div" />
+          <div>
+            <label>Image:</label>
+            <Field type="file" name="image" onChange={handleFileChange} />
+          </div>
+          <ErrorMessage name="image" component="div" />
 
           <button type="submit">Create Product</button>
         </Form>
