@@ -10,6 +10,7 @@ import {
   verifyEmail,
 } from "../controller/userController.js";
 import isAuthenticatedForEmail from "../middleware/isAuthenticatedForEmail.js";
+import { upload } from "./fileRouter.js";
 
 let userRouter = Router();
 
@@ -27,7 +28,10 @@ userRouter.route("/logout").delete(isAuthenticatedForEmail, logout);
 
 userRouter.route("/logoutAdmin").delete(isAuthenticatedForEmail, logoutAdmin);
 
-userRouter.post("/products/create", createProduct);
+// userRouter.post("/products/create", createProduct);
+// userRouter.post("/products/create", fileRouter);
+// userRouter.js
+userRouter.post("/products/create", upload.single("img"), createProduct);
 
 userRouter.route("/products").get(getAllProducts);
 

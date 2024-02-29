@@ -93,15 +93,22 @@ const Game = () => {
 
       return (
         <>
-          <div>
-            <h1 className="text-secondary">Product on Auction</h1>
-            <p className="font-medium text-textGrey">{product.title}</p>
+          <div className="flex flex-col justify-between">
+            <div>
+              <h1 className="text-secondary">Product on Auction</h1>
+              <p className="font-medium text-textGrey">{product.title}</p>
+            </div>
+            <h1 className="text-black">Worth Rs. {product.price}</h1>
+            <div>
+              <h1>Time Remaining</h1>
+              <p className="font-medium text-textGrey">{remainingTime}</p>
+            </div>
           </div>
-          <h1 className="text-black">Worth Rs. {product.price}</h1>
-          <div>
-            <h1>Time Remaining</h1>
-            <p className="font-medium text-textGrey">{remainingTime}</p>
-          </div>
+          <img
+            src={`http://localhost:8000/${product.image}`}
+            className="h-62"
+            alt="Product"
+          />
         </>
       );
     } else {
@@ -161,9 +168,8 @@ const Game = () => {
           </Formik>
         </div>
         <div className="flex flex-row justify-between w-full rounded-lg p-8 bg-white shadow-sm">
-          <div className="flex flex-col justify-between">
-            {renderProductInfo()}
-            {/* <div>
+          {renderProductInfo()}
+          {/* <div>
               <h1 className="text-secondary">Product on Auction</h1>
               <p className="font-medium text-textGrey">
                 Apple iPhone 15 Pro Max
@@ -176,8 +182,6 @@ const Game = () => {
                 3 days 21 hours 13 minutes
               </p>
             </div> */}
-          </div>
-          <img src={Product} class="h-62" alt="LUB Logo" />
         </div>
       </div>
 

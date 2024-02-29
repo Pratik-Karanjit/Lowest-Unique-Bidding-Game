@@ -168,6 +168,7 @@ export let createProduct = expressAsyncHandler(async (req, res, next) => {
       title,
       price,
       time,
+      image: req.file.filename,
     });
     successResponse(
       res,

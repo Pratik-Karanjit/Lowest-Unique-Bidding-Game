@@ -21,3 +21,4 @@ fileRouter.route("/multiple").post(upload.array("img", 5), (req, res, next) => {
   successResponse(res, HttpStatus.OK, "files Uploaded successfully", links);
 });
 export default fileRouter;
+export { upload };

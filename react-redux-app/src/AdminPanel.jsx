@@ -24,13 +24,36 @@ const AdminPanel = () => {
     setFile(event.target.files[0]);
   };
 
+  // const onSubmit = async (info) => {
+  //   try {
+  //     const result = await axios({
+  //       url: "http://localhost:8000/users/products/create",
+  //       formData,
+  //       method: "post",
+  //       data: info,
+  //     });
+
+  //     console.log("Product created successfully");
+  //     navigate("/admin");
+  //   } catch (error) {
+  //     console.log("Unable to create product:", error);
+  //   }
+  // };
+
   const onSubmit = async (info) => {
     try {
-      const result = await axios({
-        url: "http://localhost:8000/users/products/create",
-        method: "post",
-        data: info,
-      });
+      const formData = new FormData();
+      formData.append("img", file);
+
+      // Append other fields from info to formData
+      formData.append("title", info.title);
+      formData.append("price", info.price);
+      formData.append("time", info.time);
+
+      const result = await axios.post(
+        "http://localhost:8000/users/products/create",
+        formData
+      );
 
       console.log("Product created successfully");
       navigate("/admin");
