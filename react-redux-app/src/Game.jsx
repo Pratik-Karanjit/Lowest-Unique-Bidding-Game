@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import Product from "../src/images/product1.png";
+import { useSelector } from "react-redux";
 
 const Game = () => {
   const [products, setProducts] = useState([]);
   const [remainingTime, setRemainingTime] = useState("");
+  const userRole = useSelector((state) => state.user.user?.role);
+  // console.log("user role in home page:", userRole);
 
   let initialValues = {
     lubInput: "",
@@ -14,13 +16,14 @@ const Game = () => {
 
   let onSubmit = async (info) => {
     try {
+      info.lubInput = Number(info.lubInput);
       let result = await axios({
-        url: `http://localhost:8000/users`,
+        url: `http://localhost:8000/lub/amount`,
         method: "post",
         data: info,
       });
     } catch (error) {
-      console.log("unable to function.");
+      console.log("Error came.", error);
     }
   };
 
@@ -158,9 +161,13 @@ const Game = () => {
                         Currency
                       </label>
                     </div>
-                    <button className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white">
-                      Submit
-                    </button>
+                    {userRole ? (
+                      <button className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white">
+                        Submit
+                      </button>
+                    ) : (
+                      <h2>Login to submit your LUB</h2>
+                    )}
                   </div>
                 </Form>
               );

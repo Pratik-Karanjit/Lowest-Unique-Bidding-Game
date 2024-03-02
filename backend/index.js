@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDb from "./src/connectdb/connectdb.js";
 import userRouter from "./src/routes/userRouter.js";
 import fileRouter from "./src/routes/fileRouter.js";
+import lubRouter from "./src/routes/lubRouter.js";
 
 let app = express();
 
@@ -13,6 +14,8 @@ app.use(cors());
 app.use("/files", fileRouter);
 
 app.use("/users", userRouter);
+
+app.use("/lub", lubRouter);
 
 connectDb();
 
