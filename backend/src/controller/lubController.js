@@ -10,10 +10,34 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
 
   try {
     let data = await Lub.findOne({ lubInput: Number(amount) });
-    console.log(data);
+    let checker = await Lub.find({});
+    console.log("data", data);
+    let checkerResult = console.log("checker", checker);
+    let extractAmounts = checker.map((item) => item.lubInput);
+    let filteredResult = extractAmounts.some((value) =>
+      amount < value ? "The amount is LUB!" : "The amount is not the LUB"
+    );
+
+    console.log(extractAmounts);
+    console.log("filteredResult", filteredResult);
     if (!data) {
       let newLub = await Lub.create({ lubInput: amount });
-      console.log("Newly created Lub:", newLub);
+      if (filteredResult) {
+        successResponse(
+          res,
+          HttpStatus.CREATED,
+          "Lowest Unique Bid amount added successfully",
+          amount
+        );
+      } else {
+        successResponse(
+          res,
+          HttpStatus.CREATED,
+          "Non-LUB amount added successfully",
+          amount
+        );
+      }
+      // console.log("Newly created Lub:", newLub);
       successResponse(
         res,
         HttpStatus.CREATED,
