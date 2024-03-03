@@ -83,47 +83,87 @@ const AdminPanel = () => {
   };
 
   return (
-    <div>
-      <button
-        className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white"
-        onClick={() => {
-          _logoutAdmin();
-        }}
-      >
-        Logout
-      </button>
+    <div className="create-section p-7 flex justify-center align-center">
+      <div className="bg-white w-2/5 p-10 rounded-md shadow-sm">
+        <h1>Create a New Product</h1>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validationSchema={validationSchema}
+        >
+          <Form>
+            <div className="flex flex-wrap">
+              <label className="w-full mt-4">Title:</label>
+              <Field
+                className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
+                type="text"
+                name="title"
+              />
+            </div>
+            <ErrorMessage
+              className="error-message text-sm text-red-600"
+              name="title"
+              component="div"
+            />
+            <div className="flex flex-wrap">
+              <label className="w-full mt-4">Price:</label>
+              <Field
+                className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
+                type="number"
+                name="price"
+              />
+            </div>
+            <ErrorMessage
+              className="error-message text-sm text-red-600"
+              name="price"
+              component="div"
+            />
+            <div className="flex flex-wrap">
+              <label className="w-full mt-4">Time:</label>
+              <Field
+                className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
+                type="text"
+                name="time"
+              />
+            </div>
+            <ErrorMessage
+              className="error-message text-sm text-red-600"
+              name="time"
+              component="div"
+            />
+            <div className="flex flex-wrap">
+              <label className="w-full mt-4">Image:</label>
+              <Field
+                className="w-full py-3 ring-1 ring-inset ring-gray-300 rounded-md pl-3 mt-1"
+                type="file"
+                name="image"
+                onChange={handleFileChange}
+              />
+            </div>
+            <ErrorMessage
+              className="error-message text-sm text-red-600"
+              name="image"
+              component="div"
+            />
 
-      <h2>Create a New Product</h2>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validationSchema={validationSchema}
-      >
-        <Form>
-          <div>
-            <label>Title:</label>
-            <Field type="text" name="title" />
-          </div>
-          <ErrorMessage name="title" component="div" />
-          <div>
-            <label>Price:</label>
-            <Field type="number" name="price" />
-          </div>
-          <ErrorMessage name="price" component="div" />
-          <div>
-            <label>Time:</label>
-            <Field type="text" name="time" />
-          </div>
-          <ErrorMessage name="time" component="div" />
-          <div>
-            <label>Image:</label>
-            <Field type="file" name="image" onChange={handleFileChange} />
-          </div>
-          <ErrorMessage name="image" component="div" />
+            <button
+              className="mt-7 px-7 py-4 w-full bg-primary rounded-md cursor-pointer text-center font-medium text-white"
+              type="submit"
+            >
+              Create Product
+            </button>
 
-          <button type="submit">Create Product</button>
-        </Form>
-      </Formik>
+            <button
+              className="mt-7 px-7 py-4 w-full bg-textGrey rounded-md cursor-pointer font-medium text-white"
+              onClick={() => {
+                _logoutAdmin();
+              }}
+            >
+              Logout
+            </button>
+          </Form>
+        </Formik>
+      </div>
     </div>
   );
 };

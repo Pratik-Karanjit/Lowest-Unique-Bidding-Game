@@ -59,3 +59,7 @@ input[type="number"] {
 .text-black {
   color: #000000 !important;
 }
+
+.product-img {
+  width: 180px !important;
+}

@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 const Game = () => {
   const [products, setProducts] = useState([]);
   const [remainingTime, setRemainingTime] = useState("");
+  const [consoleResult, setConsoleResult] = useState("");
+
   const userRole = useSelector((state) => state.user.user?.role);
   // console.log("user role in home page:", userRole);
 
@@ -23,7 +25,9 @@ const Game = () => {
         data: info,
       });
     } catch (error) {
-      console.log("Error came.", error);
+      // console.log("Error came.", error);
+      console.log(error.response.data.message);
+      setConsoleResult(error.response.data.message);
     }
   };
 
@@ -109,7 +113,7 @@ const Game = () => {
           </div>
           <img
             src={`http://localhost:8000/${product.image}`}
-            className="h-62"
+            className="product-img"
             alt="Product"
           />
         </>
@@ -193,11 +197,7 @@ const Game = () => {
       </div>
 
       <div className="bg-white w-full my-5 p-6 rounded-md shadow-sm flex flex-col gap-6">
-        <p>
-          <span className="text-primaryDark font-bold">Congratulations!</span>{" "}
-          Your bid of Rs. 2.01 is the <b>NEW LUB</b> as it is lower than the
-          current LUB and is unique!
-        </p>
+        <p>{consoleResult}</p>
       </div>
 
       <div className="bg-white w-full p-6 my-5 rounded-md shadow-sm flex flex-col gap-6">
