@@ -24,6 +24,8 @@ const Game = () => {
         method: "post",
         data: info,
       });
+      console.log(result.data.message);
+      setConsoleResult(result.data.message);
     } catch (error) {
       // console.log("Error came.", error);
       console.log(error.response.data.message);
