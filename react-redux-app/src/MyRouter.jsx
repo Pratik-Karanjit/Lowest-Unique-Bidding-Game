@@ -12,6 +12,7 @@ import VerifyEmailPage from "./VerifyEmail";
 import AdminLogin from "./AdminLogin";
 import AdminPanel from "./AdminPanel.jsx";
 import ImageSend from "./ImageSend.jsx";
+import AdminDash from "./AdminDash.jsx";
 
 const MyRouter = () => {
   // Use the useSelector hook to get the user's role from the Redux state
@@ -46,6 +47,7 @@ const MyRouter = () => {
           <Route path="login" element={<CreateLogin />} />
           <Route path="adminLogin" element={<AdminLogin />} />
           <Route path="uploadImage" element={<ImageSend />} />
+          <Route path="adminDash" element={<AdminDash />} />
 
           {extractedRole === "admin" && (
             <Route path="adminPanel" element={<AdminPanel />} />
