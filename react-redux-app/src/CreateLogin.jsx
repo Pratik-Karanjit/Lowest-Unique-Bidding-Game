@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser } from "./features/userSlice";
 import { setLoginInfo } from "./utils/loginInfo";
 
@@ -24,11 +24,16 @@ const CreateLogin = () => {
         "http://localhost:8000/users/login",
         values
       );
+
+      //Token, userName and role are taken from response and dispatched to store it in userSlice
+      //token is set to Login Info for local Storage checking later on
+      //userName is set to local storage as it is needed in home page when the user submits his LUB
       const token = response.data.token;
       const userName = response.data.userName;
       const role = response.data.role;
       dispatch(loginUser({ token, userName, role }));
       setLoginInfo({ token });
+      localStorage.setItem("userName", userName);
 
       navigate("/");
     } catch (error) {

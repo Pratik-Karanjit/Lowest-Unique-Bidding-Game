@@ -2,34 +2,151 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLub } from "./features/lubSlice";
+import { loginUser } from "./features/userSlice";
+import { getLoginInfo } from "./utils/loginInfo";
 
 const Game = () => {
   const [products, setProducts] = useState([]);
   const [remainingTime, setRemainingTime] = useState("");
   const [consoleResult, setConsoleResult] = useState("");
+  const [consoleNumber, setConsoleNumber] = useState("");
+  const [bidHistory, setBidHistory] = useState([]);
+  let dispatch = useDispatch();
 
   const userRole = useSelector((state) => state.user.user?.role);
-  // console.log("user role in home page:", userRole);
+  const token = getLoginInfo()?.token;
+  const user = getLoginInfo()?.userName;
+
+  //When useEffect runs, it takes the token and userName from localStorage
+  //If it is there then it dispatches token and userName to userSlice
+  //This is needed so that the user is not logged out when page is re rendered
+  useEffect(() => {
+    const userLogged = localStorage.getItem("token");
+    const user = localStorage.getItem("userName");
+    if (userLogged) {
+      dispatch(loginUser({ token, user }));
+    }
+  }, [dispatch]);
 
   let initialValues = {
     lubInput: "",
   };
 
+  // let onSubmit = async (info) => {
+  //   try {
+  //     info.lubInput = Number(info.lubInput);
+  //     let result = await axios({
+  //       url: `http://localhost:8000/lub/amount`,
+  //       method: "post",
+  //       data: info,
+  //     });
+  //     let amount = result.data.result;
+  //     let time = new Date().toLocaleString();
+  //     let status = result.data.message;
+  //     {
+  //       status === "Lowest Unique Bid amount added successfully"
+  //         ? (status = "LUB")
+  //         : (status = "Not LUB");
+  //     }
+  //     dispatch(setLub({ userName, amount, time, status }));
+  //     localStorage.setItem("userName", userName);
+  //     localStorage.setItem("amount", amount);
+  //     localStorage.setItem("time", time);
+  //     localStorage.setItem("status", status);
+
+  //     setBidHistory((prevBidHistory) => [
+  //       {
+  //         amount: info.lubInput,
+  //         result: result.data.message,
+  //         timestamp: new Date().toLocaleString(),
+  //       },
+  //       ...prevBidHistory,
+  //     ]);
+
+  //     console.log(result.data.message);
+  //     setConsoleResult(result.data.message);
+  //     setConsoleNumber(result.data.result);
+  //   } catch (error) {
+  //     console.log(error.response.data.message);
+  //     setConsoleResult(error.response.data.message);
+
+  //     setBidHistory((prevBidHistory) => [
+  //       {
+  //         amount: info.lubInput,
+  //         result: `Error: ${error.response.data.message}`,
+  //         timestamp: new Date().toLocaleString(),
+  //       },
+  //       ...prevBidHistory,
+  //     ]);
+  //   }
+  // };
+
+  //To dispatch userName, amount, time and status I have ran the dispatch code twice, once inside of try block and another inside of catch block
+  //This ensures to provide correct information (status and amount) which is received from different responses (success and failure response middleware in backend)
+
   let onSubmit = async (info) => {
+    let result;
     try {
       info.lubInput = Number(info.lubInput);
-      let result = await axios({
+      result = await axios({
         url: `http://localhost:8000/lub/amount`,
         method: "post",
         data: info,
       });
+      let amount = result.data.result;
+      let time = new Date().toLocaleString();
+      let status = result.data.message;
+      {
+        status === "Lowest Unique Bid amount added successfully"
+          ? (status = "LUB")
+          : (status = "Not LUB");
+      }
+      dispatch(setLub({ user, amount, time, status }));
+      localStorage.setItem("user", user);
+      localStorage.setItem("amount", amount);
+      localStorage.setItem("time", time);
+      localStorage.setItem("status", status);
+
+      setBidHistory((prevBidHistory) => [
+        {
+          amount: info.lubInput,
+          result: result.data.message,
+          timestamp: new Date().toLocaleString(),
+        },
+        ...prevBidHistory,
+      ]);
+
       console.log(result.data.message);
       setConsoleResult(result.data.message);
+      setConsoleNumber(result.data.result);
     } catch (error) {
-      // console.log("Error came.", error);
       console.log(error.response.data.message);
       setConsoleResult(error.response.data.message);
+
+      let amount = error.response.data.result;
+      let time = new Date().toLocaleString();
+      let status = error.response.data.message;
+      {
+        status === "Lowest Unique Bid amount added successfully"
+          ? (status = "LUB")
+          : (status = "Not LUB");
+      }
+      dispatch(setLub({ user, amount, time, status }));
+      localStorage.setItem("user", user);
+      localStorage.setItem("amount", amount);
+      localStorage.setItem("time", time);
+      localStorage.setItem("status", status);
+
+      setBidHistory((prevBidHistory) => [
+        {
+          amount: info.lubInput,
+          result: `Error: ${error.response.data.message}`,
+          timestamp: new Date().toLocaleString(),
+        },
+        ...prevBidHistory,
+      ]);
     }
   };
 
@@ -167,7 +284,7 @@ const Game = () => {
                         Currency
                       </label>
                     </div>
-                    {userRole ? (
+                    {getLoginInfo()?.token ? (
                       <button className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white">
                         Submit
                       </button>
@@ -205,14 +322,17 @@ const Game = () => {
       <div className="bg-white w-full p-6 my-5 rounded-md shadow-sm flex flex-col gap-6">
         <h2 className="font-bold text-primaryDark">Bid History</h2>
         <div className="flex flex-col gap-3">
-          <div className="flex flex-row justify-between py-3 px-4 bg-background rounded-md">
-            <p>You bid Rs. 0.98 which was not the LUB.</p>
-            <p>23/02/2024 5:43PM</p>
-          </div>
-          <div className="flex flex-row justify-between py-3 px-4 bg-background rounded-md">
-            <p>You bid Rs. 0.98 which was not the LUB.</p>
-            <p>23/02/2024 5:43PM</p>
-          </div>
+          {bidHistory.map((bid, index) => (
+            <div
+              key={index}
+              className="flex flex-row justify-between py-3 px-4 bg-background rounded-md"
+            >
+              <p>
+                You bid Rs.{bid.amount} which was {bid.result}.
+              </p>
+              <p>{bid.timestamp}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

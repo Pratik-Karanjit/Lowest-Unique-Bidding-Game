@@ -1,7 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { setLub } from "./features/lubSlice";
 
 const Content = () => {
+  //All states are extracted from lubSlice
+  let dispatch = useDispatch();
+  const lubName = useSelector((state) => state.lub?.lub?.userName);
+  const lubAmount = useSelector((state) => state.lub?.lub?.amount);
+  const lubTime = useSelector((state) => state.lub?.lub?.time);
+  const lubStatus = useSelector((state) => state.lub?.lub?.status);
+  // console.log(lubName);
+  // console.log(lubAmount);
+  // console.log(lubTime);
+  // console.log(lubStatus);
+
+  //All the data that were set in logging in and Game.jsx are extracted here to set it to the redux
+  //This is needed as redux states are refreshed so I have set it to local Storage and got it back using getItem
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName");
+    const storedAmount = localStorage.getItem("amount");
+    const storedTime = localStorage.getItem("time");
+    const storedStatus = localStorage.getItem("status");
+
+    if (storedUserName) {
+      dispatch(
+        setLub({
+          userName: storedUserName,
+          amount: storedAmount,
+          time: storedTime,
+          status: storedStatus,
+        })
+      );
+    }
+  }, [dispatch]);
+
   return (
     <div className="main-wrapper p-7">
       <div className="w-full rounded-lg p-8 bg-white shadow-sm mb-5">
@@ -34,17 +67,17 @@ const Content = () => {
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <div class="flex">
                         <p class="text-gray-900 whitespace-no-wrap">
-                          Pratik Karanjit
+                          {lubName}
                         </p>
                       </div>
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">Rs. 1.33</p>
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        Rs. {lubAmount}
+                      </p>
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        22:02:48 04/12/24
-                      </p>
+                      <p class="text-gray-900 whitespace-no-wrap">{lubTime}</p>
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <span class="relative inline-block px-3 py-1 font-medium text-green-900 leading-tight">
@@ -52,7 +85,7 @@ const Content = () => {
                           aria-hidden
                           class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                         ></span>
-                        <span class="relative">LUB</span>
+                        <span class="relative">{lubStatus}</span>
                       </span>
                     </td>
                   </tr>
