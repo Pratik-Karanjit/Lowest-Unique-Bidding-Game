@@ -26,7 +26,7 @@ const AdminLogin = () => {
       const token = response.data.token;
       const role = response.data.role;
       dispatch(loginAdmin({ token, role }));
-      navigate("/adminPanel");
+      navigate("/adminDash");
     } catch (error) {
       console.log("Unable to submit:", error);
       setLoginError(true);

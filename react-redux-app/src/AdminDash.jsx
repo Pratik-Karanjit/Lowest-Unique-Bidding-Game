@@ -2,10 +2,16 @@ import React, { useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { setLub } from "./features/lubSlice";
+import { useNavigate } from "react-router-dom";
+import { logoutAdmin } from "./features/userSlice";
+import axios from "axios";
 
 const Content = () => {
   //All states are extracted from lubSlice
   let dispatch = useDispatch();
+  let navigate = useNavigate();
+  const admin = useSelector((state) => state.user.admin?.token);
+
   const lubName = useSelector((state) => state.lub?.lub?.userName);
   const lubAmount = useSelector((state) => state.lub?.lub?.amount);
   const lubTime = useSelector((state) => state.lub?.lub?.time);
@@ -34,6 +40,20 @@ const Content = () => {
       );
     }
   }, [dispatch]);
+
+  let _logoutAdmin = async () => {
+    try {
+      await axios({
+        url: `http://localhost:8000/users/logoutAdmin?token=${admin}`,
+        method: "delete",
+      });
+      dispatch(logoutAdmin());
+
+      navigate(`/adminLogin`);
+    } catch (error) {
+      console.log("Unable to Logout");
+    }
+  };
 
   return (
     <div className="main-wrapper p-7">
@@ -238,6 +258,22 @@ const Content = () => {
           </div>
         </div>
       </div>
+      <button
+        class="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white"
+        onClick={(e) => {
+          navigate("/adminPanel");
+        }}
+      >
+        Add Product
+      </button>
+      <button
+        class="mt-7 ml-2 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white"
+        onClick={() => {
+          _logoutAdmin();
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 };

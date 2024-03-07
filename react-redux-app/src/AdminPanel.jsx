@@ -161,6 +161,14 @@ const AdminPanel = () => {
             >
               Logout
             </button>
+            <button
+              className="mt-7 px-7 py-4 w-full bg-textGrey rounded-md cursor-pointer font-medium text-white"
+              onClick={() => {
+                navigate("/adminDash");
+              }}
+            >
+              Go to Dashboard
+            </button>
           </Form>
         </Formik>
       </div>
