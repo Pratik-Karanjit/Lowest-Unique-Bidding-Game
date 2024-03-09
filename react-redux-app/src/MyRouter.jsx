@@ -16,19 +16,21 @@ import AdminDash from "./AdminDash.jsx";
 
 const MyRouter = () => {
   // Use the useSelector hook to get the user's role from the Redux state
-  const userRole = useSelector((state) => state.user.user);
-  const adminRole = useSelector((state) => state.user.admin);
+  // const userRole = useSelector((state) => state.user.user);
+  // const adminRole = useSelector((state) => state.user.admin);
 
   //To see user's role
-  const roleOfUser = userRole && userRole.role;
+  // const roleOfUser = userRole && userRole.role;
   // console.log("userRole", roleOfUser);
 
   //To see admin's role
   // console.log("adminRole", adminRole);
 
   //Extract role only
-  const extractedRole = adminRole && adminRole.role;
+  // const extractedRole = adminRole && adminRole.role;
   // console.log("******", extractedRole);
+
+  const isAdmin = localStorage.getItem("adminRole");
 
   return (
     <div className="bg-off-white h-screen">
@@ -48,11 +50,11 @@ const MyRouter = () => {
           <Route path="adminLogin" element={<AdminLogin />} />
           <Route path="uploadImage" element={<ImageSend />} />
 
-          {extractedRole === "admin" && (
+          {isAdmin === "admin" && (
             <Route path="adminPanel" element={<AdminPanel />} />
           )}
 
-          {extractedRole === "admin" && (
+          {isAdmin === "admin" && (
             <Route path="adminDash" element={<AdminDash />} />
           )}
 

@@ -34,55 +34,6 @@ const Game = () => {
     lubInput: "",
   };
 
-  // let onSubmit = async (info) => {
-  //   try {
-  //     info.lubInput = Number(info.lubInput);
-  //     let result = await axios({
-  //       url: `http://localhost:8000/lub/amount`,
-  //       method: "post",
-  //       data: info,
-  //     });
-  //     let amount = result.data.result;
-  //     let time = new Date().toLocaleString();
-  //     let status = result.data.message;
-  //     {
-  //       status === "Lowest Unique Bid amount added successfully"
-  //         ? (status = "LUB")
-  //         : (status = "Not LUB");
-  //     }
-  //     dispatch(setLub({ userName, amount, time, status }));
-  //     localStorage.setItem("userName", userName);
-  //     localStorage.setItem("amount", amount);
-  //     localStorage.setItem("time", time);
-  //     localStorage.setItem("status", status);
-
-  //     setBidHistory((prevBidHistory) => [
-  //       {
-  //         amount: info.lubInput,
-  //         result: result.data.message,
-  //         timestamp: new Date().toLocaleString(),
-  //       },
-  //       ...prevBidHistory,
-  //     ]);
-
-  //     console.log(result.data.message);
-  //     setConsoleResult(result.data.message);
-  //     setConsoleNumber(result.data.result);
-  //   } catch (error) {
-  //     console.log(error.response.data.message);
-  //     setConsoleResult(error.response.data.message);
-
-  //     setBidHistory((prevBidHistory) => [
-  //       {
-  //         amount: info.lubInput,
-  //         result: `Error: ${error.response.data.message}`,
-  //         timestamp: new Date().toLocaleString(),
-  //       },
-  //       ...prevBidHistory,
-  //     ]);
-  //   }
-  // };
-
   //To dispatch userName, amount, time and status I have ran the dispatch code twice, once inside of try block and another inside of catch block
   //This ensures to provide correct information (status and amount) which is received from different responses (success and failure response middleware in backend)
 
@@ -98,16 +49,23 @@ const Game = () => {
       let amount = result.data.result;
       let time = new Date().toLocaleString();
       let status = result.data.message;
+      const user = localStorage.getItem("userName");
+
       {
         status === "Lowest Unique Bid amount added successfully"
           ? (status = "LUB")
           : (status = "Not LUB");
       }
-      dispatch(setLub({ user, amount, time, status }));
-      localStorage.setItem("user", user);
-      localStorage.setItem("amount", amount);
-      localStorage.setItem("time", time);
-      localStorage.setItem("status", status);
+      dispatch(setLub({ userName: user, amount, time, status }));
+
+      const storedEntries =
+        JSON.parse(localStorage.getItem("lubEntries")) || [];
+
+      // Add the new entry to the array
+      storedEntries.push({ user, amount, time, status });
+
+      // Save the updated Lub entries array back to localStorage
+      localStorage.setItem("lubEntries", JSON.stringify(storedEntries));
 
       setBidHistory((prevBidHistory) => [
         {

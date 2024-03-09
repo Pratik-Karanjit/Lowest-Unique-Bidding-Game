@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { setLub } from "./features/lubSlice";
+import { selectLubEntries, setLub } from "./features/lubSlice";
 import { useNavigate } from "react-router-dom";
-import { logoutAdmin } from "./features/userSlice";
+import { loginAdmin, logoutAdmin } from "./features/userSlice";
 import axios from "axios";
 
 const Content = () => {
@@ -12,7 +12,7 @@ const Content = () => {
   let navigate = useNavigate();
   const admin = useSelector((state) => state.user.admin?.token);
 
-  const lubName = useSelector((state) => state.lub?.lub?.userName);
+  const lubName = useSelector((state) => state.lub?.lub?.user);
   const lubAmount = useSelector((state) => state.lub?.lub?.amount);
   const lubTime = useSelector((state) => state.lub?.lub?.time);
   const lubStatus = useSelector((state) => state.lub?.lub?.status);
@@ -21,23 +21,56 @@ const Content = () => {
   // console.log(lubTime);
   // console.log(lubStatus);
 
+  //For mapping all rows dynamically
+  // const lubData = useSelector((state) => [
+  //   {
+  //     name: state.lub?.lub?.userName,
+  //     amount: state.lub?.lub?.amount,
+  //     time: state.lub?.lub?.time,
+  //     status: state.lub?.lub?.status,
+  //   },
+  // ]);
+
+  const lubEntries = useSelector(selectLubEntries);
+
   //All the data that were set in logging in and Game.jsx are extracted here to set it to the redux
   //This is needed as redux states are refreshed so I have set it to local Storage and got it back using getItem
-  useEffect(() => {
-    const storedUserName = localStorage.getItem("userName");
-    const storedAmount = localStorage.getItem("amount");
-    const storedTime = localStorage.getItem("time");
-    const storedStatus = localStorage.getItem("status");
+  // useEffect(() => {
+  //   const storedUserName = localStorage.getItem("userName");
+  //   const storedAmount = localStorage.getItem("amount");
+  //   const storedTime = localStorage.getItem("time");
+  //   const storedStatus = localStorage.getItem("status");
 
-    if (storedUserName) {
-      dispatch(
-        setLub({
-          userName: storedUserName,
-          amount: storedAmount,
-          time: storedTime,
-          status: storedStatus,
-        })
-      );
+  //   if (storedUserName) {
+  //     dispatch(
+  //       setLub({
+  //         userName: storedUserName,
+  //         amount: storedAmount,
+  //         time: storedTime,
+  //         status: storedStatus,
+  //       })
+  //     );
+  //   }
+  // }, [dispatch]);
+
+  useEffect(() => {
+    // Retrieve Lub entries array from localStorage
+    const storedEntries = JSON.parse(localStorage.getItem("lubEntries"));
+
+    // If there are stored entries, dispatch them to the Redux store
+    if (storedEntries && storedEntries.length > 0) {
+      storedEntries.forEach((entry) => {
+        dispatch(setLub(entry));
+      });
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const role = localStorage.getItem("adminRole");
+    const token = localStorage.getItem("adminToken");
+
+    if (role) {
+      dispatch(loginAdmin({ role: role, token: token }));
     }
   }, [dispatch]);
 
@@ -47,6 +80,8 @@ const Content = () => {
         url: `http://localhost:8000/users/logoutAdmin?token=${admin}`,
         method: "delete",
       });
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminRole");
       dispatch(logoutAdmin());
 
       navigate(`/adminLogin`);
@@ -83,86 +118,46 @@ const Content = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <div class="flex">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          {lubName}
+                  {lubEntries.map((rowData, index) => (
+                    <tr key={index}>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <div className="flex">
+                          <p className="text-gray-900 whitespace-no-wrap">
+                            {rowData.user}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          Rs. {rowData.amount}
                         </p>
-                      </div>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        Rs. {lubAmount}
-                      </p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">{lubTime}</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <span class="relative inline-block px-3 py-1 font-medium text-green-900 leading-tight">
-                        <span
-                          aria-hidden
-                          class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                        ></span>
-                        <span class="relative">{lubStatus}</span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <div class="flex">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          Saras Karanjit
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {rowData.time}
                         </p>
-                      </div>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">Rs. 2.38</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        13:02:48 04/12/24
-                      </p>
-                    </td>
-
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <span
-                          aria-hidden
-                          class="absolute inset-0 bg-red-200 opacity-50 rounded-full"
-                        ></span>
-                        <span class="relative">Not LUB</span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <div class="flex">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          Sakesh Karanjit
-                        </p>
-                      </div>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">Rs. 5.99</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        03:02:48 04/12/24
-                      </p>
-                    </td>
-
-                    <td class="px-5 py-5 bg-white text-sm">
-                      <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                        <span
-                          aria-hidden
-                          class="absolute inset-0 bg-orange-200 opacity-50 rounded-full"
-                        ></span>
-                        <span class="relative">Was LUB</span>
-                      </span>
-                    </td>
-                  </tr>
+                          className={`relative inline-block px-3 py-1 font-semibold ${
+                            rowData.status === "Not LUB"
+                              ? "text-red-900"
+                              : "text-green-900"
+                          } leading-tight`}
+                        >
+                          <span
+                            aria-hidden
+                            className={`absolute inset-0 ${
+                              rowData.status === "Not LUB"
+                                ? "bg-red-200"
+                                : "bg-green-200"
+                            } opacity-50 rounded-full`}
+                          ></span>
+                          <span className="relative">{rowData.status}</span>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

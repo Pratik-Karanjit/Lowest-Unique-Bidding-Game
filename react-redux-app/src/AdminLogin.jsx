@@ -26,6 +26,9 @@ const AdminLogin = () => {
       const token = response.data.token;
       const role = response.data.role;
       dispatch(loginAdmin({ token, role }));
+      localStorage.setItem("adminRole", role);
+      localStorage.setItem("adminToken", token);
+
       navigate("/adminDash");
     } catch (error) {
       console.log("Unable to submit:", error);

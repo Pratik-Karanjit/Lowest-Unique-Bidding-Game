@@ -74,6 +74,8 @@ const AdminPanel = () => {
         url: `http://localhost:8000/users/logoutAdmin?token=${admin}`,
         method: "delete",
       });
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminRole");
       dispatch(logoutAdmin());
 
       navigate(`/adminLogin`);
