@@ -6,13 +6,14 @@ export const lubSlice = createSlice({
     lubEntries: [],
   },
 
+  //Reducers are functions responsible for handling state changes in response to dispatched actions.
   reducers: {
     setLub: (state, action) => {
-      // Check if the entry already exists based on timestamp
+      // Check if the entry already exists based on timestamp using findIndex
       const existingEntryIndex = state.lubEntries.findIndex(
         (entry) => entry.time === action.payload.time
       );
-
+      //findIndex returns -1 if no index are found
       if (existingEntryIndex === -1) {
         // If the entry doesn't exist, add it to the array
         state.lubEntries.push(action.payload);

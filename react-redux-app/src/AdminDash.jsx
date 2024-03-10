@@ -20,11 +20,14 @@ const AdminDash = () => {
 
   // State for pagination
   const [page, setPage] = useState(1);
-  const pageSize = 10; // Number of items per page
+  const pageSize = 10; //10 items per page
 
-  // Calculate the start and end index for the current page
+  //Code to display lub values from index 0 to 9
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
+
+  //Creates a new array inclusive of start index and exclusive of endIndex
+  //This array is then mapped to display values in the table rows.
   const currentPageEntries = lubEntries.slice(startIndex, endIndex);
 
   // console.log(lubName);
@@ -63,10 +66,11 @@ const AdminDash = () => {
   // }, [dispatch]);
 
   useEffect(() => {
-    // Retrieve Lub entries array from localStorage
+    //localStorage can only store string key-value pairs.\
+    //  To store JS objects I had to json.stringify so below I have JSON.parse to deserialize strings into JS objects
     const storedEntries = JSON.parse(localStorage.getItem("lubEntries"));
 
-    // If there are stored entries, dispatch them to the Redux store
+    //If local Storage has lub entries then using ForEach I have logged all lub into setLub reducer
     if (storedEntries && storedEntries.length > 0) {
       storedEntries.forEach((entry) => {
         dispatch(setLub(entry));
@@ -127,6 +131,7 @@ const AdminDash = () => {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* The 10 data entries are mapped here */}
                   {currentPageEntries.map((rowData, index) => (
                     <tr key={index}>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
