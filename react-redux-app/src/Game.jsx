@@ -12,13 +12,18 @@ const Game = () => {
   const [remainingTime, setRemainingTime] = useState("");
   const [consoleResult, setConsoleResult] = useState("");
   const [consoleNumber, setConsoleNumber] = useState("");
-  const [bidHistory, setBidHistory] = useState([]);
+  const [bidHistory, setBidHistory] = useState(
+    JSON.parse(localStorage.getItem("bidHistory")) || []
+  );
   let dispatch = useDispatch();
 
   const userRole = useSelector((state) => state.user.user?.role);
   const token = getLoginInfo()?.token;
   const user = getLoginInfo()?.userName;
 
+  let initialValues = {
+    lubInput: "",
+  };
   //When useEffect runs, it takes the token and userName from localStorage
   //If it is there then it dispatches token and userName to userSlice
   //This is needed so that the user is not logged out when page is re rendered
@@ -30,9 +35,11 @@ const Game = () => {
     }
   }, [dispatch]);
 
-  let initialValues = {
-    lubInput: "",
-  };
+  useEffect(() => {
+    const storedBidHistory =
+      JSON.parse(localStorage.getItem("BidHistory")) || [];
+    setBidHistory(storedBidHistory);
+  }, []);
 
   //To dispatch userName, amount, time and status I have ran the dispatch code twice, once inside of try block and another inside of catch block
   //This ensures to provide correct information (status and amount) which is received from different responses (success and failure response middleware in backend)
@@ -67,14 +74,32 @@ const Game = () => {
       // Save the updated Lub entries array back to localStorage
       localStorage.setItem("lubEntries", JSON.stringify(storedEntries));
 
+      // The prevBidHistory is the previous state of bidHistory.
+      //...prevBidHistory: This is the spread operator, which is used to create a new array containing all the elements from the previous bid history.
+      //The spread operator is used to avoid directly modifying the existing state and instead create a new state with the updated bid.
+      //Without spread operator, it will replace the existing state which does not allow to store multiple bid history elements.
       setBidHistory((prevBidHistory) => [
+        ...prevBidHistory,
         {
           amount: info.lubInput,
           result: result.data.message,
           timestamp: new Date().toLocaleString(),
         },
-        ...prevBidHistory,
       ]);
+
+      //Similar to that of setBidHistory but here I have used a variable that uses spread operator with all biddings of current bidHistory and appends new object as latest bid
+      const updatedBidHistory = [
+        ...bidHistory,
+        {
+          amount: info.lubInput,
+          result: result.data.message,
+          timestamp: new Date().toLocaleString(),
+        },
+      ];
+
+      //Storing the updatedBidHistory variable into local storage in order to get it while re render
+      //JSON.stringify converts JS array into JSON formatted string which can be stored in local storage.
+      localStorage.setItem("BidHistory", JSON.stringify(updatedBidHistory));
 
       console.log(result.data.message);
       setConsoleResult(result.data.message);
@@ -97,6 +122,7 @@ const Game = () => {
       localStorage.setItem("time", time);
       localStorage.setItem("status", status);
 
+      //Same concept but this is to setBidHistory when error is caught and details regarding it are set into localStorage eventually.
       setBidHistory((prevBidHistory) => [
         {
           amount: info.lubInput,
@@ -105,6 +131,16 @@ const Game = () => {
         },
         ...prevBidHistory,
       ]);
+      const updatedBidHistory = [
+        ...bidHistory,
+        {
+          amount: info.lubInput,
+          result: `Error: ${error.response.data.message}`,
+          timestamp: new Date().toLocaleString(),
+        },
+      ];
+
+      localStorage.setItem("BidHistory", JSON.stringify(updatedBidHistory));
     }
   };
 
