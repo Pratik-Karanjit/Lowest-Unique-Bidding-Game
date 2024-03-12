@@ -16,7 +16,6 @@ const Game = () => {
     JSON.parse(localStorage.getItem("bidHistory")) || []
   );
   let dispatch = useDispatch();
-
   const userRole = useSelector((state) => state.user.user?.role);
   const token = getLoginInfo()?.token;
   const user = getLoginInfo()?.userName;
@@ -35,10 +34,11 @@ const Game = () => {
     }
   }, [dispatch]);
 
+  //Extracting the JSON formatted strings from localStorage into JS objects and setting it to BidHistory state when page renders
   useEffect(() => {
-    const storedBidHistory =
-      JSON.parse(localStorage.getItem("BidHistory")) || [];
-    setBidHistory(storedBidHistory);
+    const storedBidHistories =
+      JSON.parse(localStorage.getItem("BidHistories")) || {};
+    setBidHistory(storedBidHistories);
   }, []);
 
   //To dispatch userName, amount, time and status I have ran the dispatch code twice, once inside of try block and another inside of catch block
@@ -75,21 +75,30 @@ const Game = () => {
       localStorage.setItem("lubEntries", JSON.stringify(storedEntries));
 
       // The prevBidHistory is the previous state of bidHistory.
-      //...prevBidHistory: This is the spread operator, which is used to create a new array containing all the elements from the previous bid history.
+      //...prevBidHistories: This is the spread operator, which is used to create a new array containing all the elements from the previous bid history.
       //The spread operator is used to avoid directly modifying the existing state and instead create a new state with the updated bid.
       //Without spread operator, it will replace the existing state which does not allow to store multiple bid history elements.
-      setBidHistory((prevBidHistory) => [
-        ...prevBidHistory,
-        {
-          amount: info.lubInput,
-          result: result.data.message,
-          timestamp: new Date().toLocaleString(),
-        },
-      ]);
+      //updating the bid history for the specific user ([user]).
+      //Inside [user]: [...], I used the spread operator again to create a shallow copy of the existing bid history for the user.
+      setBidHistory((prevBidHistories) => {
+        return {
+          ...prevBidHistories,
+          [user]: [
+            ...(prevBidHistories[user] || []),
+            {
+              amount: info.lubInput,
+              result: result.data.message,
+              timestamp: new Date().toLocaleString(),
+            },
+          ],
+        };
+      });
 
-      //Similar to that of setBidHistory but here I have used a variable that uses spread operator with all biddings of current bidHistory and appends new object as latest bid
+      //To create unique user's bid history I have extracted userName
+      //Spread operator to create new array of new bid entry
+      const user_ = getLoginInfo()?.userName;
       const updatedBidHistory = [
-        ...bidHistory,
+        ...(bidHistory[user_] || []),
         {
           amount: info.lubInput,
           result: result.data.message,
@@ -97,9 +106,15 @@ const Game = () => {
         },
       ];
 
-      //Storing the updatedBidHistory variable into local storage in order to get it while re render
-      //JSON.stringify converts JS array into JSON formatted string which can be stored in local storage.
-      localStorage.setItem("BidHistory", JSON.stringify(updatedBidHistory));
+      //{...bidHistory}: This includes all the existing bid histories.
+      // [user]: updatedBidHistory : This dynamically sets the key based on the user variable, and its value is the updated bid history for that specific user.
+      localStorage.setItem(
+        "BidHistories",
+        JSON.stringify({
+          ...bidHistory,
+          [user]: updatedBidHistory,
+        })
+      );
 
       console.log(result.data.message);
       setConsoleResult(result.data.message);
@@ -122,25 +137,30 @@ const Game = () => {
       localStorage.setItem("time", time);
       localStorage.setItem("status", status);
 
-      //Same concept but this is to setBidHistory when error is caught and details regarding it are set into localStorage eventually.
-      setBidHistory((prevBidHistory) => [
-        {
-          amount: info.lubInput,
-          result: `Error: ${error.response.data.message}`,
-          timestamp: new Date().toLocaleString(),
-        },
-        ...prevBidHistory,
-      ]);
-      const updatedBidHistory = [
-        ...bidHistory,
-        {
-          amount: info.lubInput,
-          result: `Error: ${error.response.data.message}`,
-          timestamp: new Date().toLocaleString(),
-        },
-      ];
+      // Updated code for both try and catch block bid history
+      setBidHistory((prevBidHistories) => {
+        const updatedBidHistory = [
+          {
+            amount: info.lubInput,
+            result: `Error: ${error.response.data.message}`,
+            timestamp: new Date().toLocaleString(),
+          },
+          ...(prevBidHistories[user] || []),
+        ];
 
-      localStorage.setItem("BidHistory", JSON.stringify(updatedBidHistory));
+        localStorage.setItem(
+          "BidHistories",
+          JSON.stringify({
+            ...prevBidHistories,
+            [user]: updatedBidHistory,
+          })
+        );
+
+        return {
+          ...prevBidHistories,
+          [user]: updatedBidHistory,
+        };
+      });
     }
   };
 
@@ -316,7 +336,7 @@ const Game = () => {
       <div className="bg-white w-full p-6 my-5 rounded-md shadow-sm flex flex-col gap-6">
         <h2 className="font-bold text-primaryDark">Bid History</h2>
         <div className="flex flex-col gap-3">
-          {bidHistory.map((bid, index) => (
+          {bidHistory[user]?.map((bid, index) => (
             <div
               key={index}
               className="flex flex-row justify-between py-3 px-4 bg-background rounded-md"

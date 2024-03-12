@@ -32,7 +32,7 @@ const CreateLogin = () => {
       const userName = response.data.userName;
       const role = response.data.role;
       dispatch(loginUser({ token, userName, role }));
-      setLoginInfo({ token });
+      setLoginInfo({ token, userName });
       localStorage.setItem("userName", userName);
 
       navigate("/");
