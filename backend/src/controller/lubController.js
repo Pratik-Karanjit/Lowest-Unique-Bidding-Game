@@ -10,14 +10,31 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
 
   try {
     let data = await Lub.findOne({ lubInput: Number(amount) });
-    let checker = await Lub.find({});
     console.log("data", data);
-    // let checkerResult = console.log("checker", checker);
-    let extractAmounts = checker.map((item) => item.lubInput);
-    let filteredResult = extractAmounts.every((value) => amount < value);
 
+    let checker = await Lub.find({});
+    // console.log("checker", checker);
+
+    let extractAmounts = checker.map((item) => item.lubInput);
     console.log(extractAmounts);
+
+    let filteredResult = extractAmounts.every((value) => amount < value);
     console.log("filteredResult", filteredResult);
+
+    // Find the lowest number
+    let lowestAmount = Math.min(...extractAmounts);
+    console.log("lowestAmount", lowestAmount);
+
+    // Filter out the lowest number from the array
+    let filteredAmounts = extractAmounts.filter(
+      (amount) => amount !== lowestAmount
+    );
+    console.log("filteredAmounts", filteredAmounts);
+
+    // Find the new lowest number in the filtered array
+    let secondLowestAmount = Math.min(...filteredAmounts);
+    console.log("Second lowest amount:", secondLowestAmount);
+
     if (!data) {
       let newLub = await Lub.create({ lubInput: amount });
       if (filteredResult) {
@@ -35,23 +52,33 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
           amount
         );
       }
-      // console.log("Newly created Lub:", newLub);
-      successResponse(
-        res,
-        HttpStatus.CREATED,
-        "Unique LUB amount added successfully",
-        amount
-      );
     } else {
-      //scenario: the LUB is 100 and other amounts in DB are 101 and 102
-      //check if the newly entered amount is LUB(Lowest Unique Bid) i.e. 100 and if it is then check the next lowest bid which is 101 and console a message saying the new LUB is 101
-      //If the amount is not LUB and is 102 which does not need any checking as it is not the LUB. In this case just display amount already exists.
-      errorResponse(
-        res,
-        HttpStatus.BAD_REQUEST,
-        " amount already exists",
-        amount
-      );
+      if (amount === lowestAmount) {
+        // Check if the current LUB is unique or not
+        let isCurrentLubUnique =
+          extractAmounts.filter((value) => value === amount).length === 1;
+
+        if (isCurrentLubUnique) {
+          // Find the next lowest unique bid
+          let nextLowestUniqueBid = secondLowestAmount;
+
+          successResponse(
+            res,
+            HttpStatus.CREATED,
+            `Matched the LUB. The new LUB is ${nextLowestUniqueBid}`,
+            amount
+          );
+        } else {
+          errorResponse(
+            res,
+            HttpStatus.BAD_REQUEST,
+            "LUB amount already exists."
+          );
+        }
+      } else {
+        // If the entered amount is not the current LUB, display an error
+        errorResponse(res, HttpStatus.BAD_REQUEST, "LUB amount already exists");
+      }
     }
   } catch (error) {
     console.error("Error:", error);
