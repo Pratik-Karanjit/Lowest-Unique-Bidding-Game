@@ -57,16 +57,26 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
         // Check if the current LUB is unique or not
         let isCurrentLubUnique =
           extractAmounts.filter((value) => value === amount).length === 1;
+        console.log("isCurrentLubUnique:", isCurrentLubUnique);
 
         if (isCurrentLubUnique) {
-          // Find the next lowest unique bid
-          let nextLowestUniqueBid = secondLowestAmount;
+          let newLub = secondLowestAmount;
 
+          // Update isLub flag for previous LUB
+          await Lub.findOneAndUpdate(
+            { lubInput: lowestAmount },
+            { isLub: false }
+          );
+
+          // Update isLub flag for new LUB
+          await Lub.findOneAndUpdate({ lubInput: newLub }, { isLub: true });
+
+          // Send success response with updated LUB
           successResponse(
             res,
             HttpStatus.CREATED,
-            `Matched the LUB. The new LUB is ${nextLowestUniqueBid}`,
-            amount
+            "Database updated with new LUB:",
+            newLub
           );
         } else {
           errorResponse(
