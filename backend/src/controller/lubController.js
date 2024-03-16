@@ -25,7 +25,7 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
     let lowestAmount = Math.min(...extractAmounts);
     console.log("lowestAmount", lowestAmount);
 
-    // Filter out the lowest number from the array
+    //This array holds all except the lowest amount
     let filteredAmounts = extractAmounts.filter(
       (amount) => amount !== lowestAmount
     );
@@ -35,9 +35,25 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
     let secondLowestAmount = Math.min(...filteredAmounts);
     console.log("Second lowest amount:", secondLowestAmount);
 
+    let uniqueBids = [];
+    for (let item of extractAmounts) {
+      if (extractAmounts.filter((v) => v === item).length === 1) {
+        uniqueBids.push(item);
+      }
+    }
+
+    let currentLowestUniqueBid = Math.min(...uniqueBids);
+    console.log("currentLowestUniqueBid:", currentLowestUniqueBid);
+
     if (!data) {
       let newLub = await Lub.create({ lubInput: amount });
       if (filteredResult) {
+        await Lub.findOneAndUpdate({ lubInput: amount }, { isLub: true });
+        await Lub.findOneAndUpdate(
+          { lubInput: lowestAmount },
+          { isLub: false }
+        );
+
         successResponse(
           res,
           HttpStatus.CREATED,
@@ -60,24 +76,45 @@ export let userAmount = expressAsyncHandler(async (req, res, next) => {
         console.log("isCurrentLubUnique:", isCurrentLubUnique);
 
         if (isCurrentLubUnique) {
-          let newLub = secondLowestAmount;
+          let newLub; // Declare newLub outside the loop
 
-          // Update isLub flag for previous LUB
-          await Lub.findOneAndUpdate(
-            { lubInput: lowestAmount },
-            { isLub: false }
-          );
+          // Find the first truly unique bid among filtered amounts
+          for (let amount of filteredAmounts) {
+            if (
+              extractAmounts.filter((value) => value === amount).length === 1
+            ) {
+              newLub = amount;
+              console.log("newLub:", newLub);
+              break; // Exit the loop once a unique bid is found
+            }
+          }
 
-          // Update isLub flag for new LUB
-          await Lub.findOneAndUpdate({ lubInput: newLub }, { isLub: true });
+          // If a unique bid is found, update isLub flags
+          if (newLub) {
+            await Lub.findOneAndUpdate(
+              { lubInput: lowestAmount },
+              { isLub: false }
+            );
+            await Lub.findOneAndUpdate(
+              { lubInput: secondLowestAmount },
+              { isLub: true }
+            );
 
-          // Send success response with updated LUB
-          successResponse(
-            res,
-            HttpStatus.CREATED,
-            "Database updated with new LUB:",
-            newLub
-          );
+            // Send success response with updated LUB
+            successResponse(
+              res,
+              HttpStatus.CREATED,
+              "Database updated with new LUB:",
+              newLub
+            );
+          } else {
+            // Handle scenario where no unique bid is found (all remaining bids are non-unique)
+            errorResponse(
+              res,
+              HttpStatus.BAD_REQUEST,
+              "No unique bid found to set as new LUB."
+            );
+          }
         } else {
           errorResponse(
             res,
