@@ -33,11 +33,9 @@ const UI = () => {
           <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
             <img src={Logo} class="h-12" alt="LUB Logo" />
           </a>
-        </div>
-        <div>
           {user ? (
             <button
-              className="mt-7 px-7 py-4 w-fit bg-primary rounded-md cursor-pointer font-medium text-white"
+              className="px-4 py-2 absolute right-6 w-fit bg-primary rounded-md cursor-pointer font-medium text-white"
               onClick={() => {
                 logout();
               }}

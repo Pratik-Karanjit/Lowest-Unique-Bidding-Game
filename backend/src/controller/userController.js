@@ -5,7 +5,7 @@ import expressAsyncHandler from "express-async-handler";
 import { sendMail } from "../utils/sendMail.js";
 import { comparePassword, hashPassword } from "../utils/hashing.js";
 import { generateToken, verifyToken } from "../utils/token.js";
-import bcrypt from "bcrypt";
+import errorResponse from "../helper/ErrorResponse.js";
 
 export let createUser = expressAsyncHandler(async (req, res, next) => {
   let data = req.body;

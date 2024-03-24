@@ -17,6 +17,8 @@ const AdminDash = () => {
   const lubTime = useSelector((state) => state.lub?.lub?.time);
   const lubStatus = useSelector((state) => state.lub?.lub?.status);
   const lubEntries = useSelector(selectLubEntries);
+  const lubCount = lubEntries.length;
+  // console.log("Number of entries:", lubEntriesCount);
 
   // State for pagination
   const [page, setPage] = useState(1);
@@ -24,46 +26,11 @@ const AdminDash = () => {
 
   //Code to display lub values from index 0 to 9
   const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
+  const endIndex = Math.min(startIndex + pageSize, lubCount);
 
   //Creates a new array inclusive of start index and exclusive of endIndex
   //This array is then mapped to display values in the table rows.
   const currentPageEntries = lubEntries.slice(startIndex, endIndex);
-
-  // console.log(lubName);
-  // console.log(lubAmount);
-  // console.log(lubTime);
-  // console.log(lubStatus);
-
-  //For mapping all rows dynamically
-  // const lubData = useSelector((state) => [
-  //   {
-  //     name: state.lub?.lub?.userName,
-  //     amount: state.lub?.lub?.amount,
-  //     time: state.lub?.lub?.time,
-  //     status: state.lub?.lub?.status,
-  //   },
-  // ]);
-
-  //All the data that were set in logging in and Game.jsx are extracted here to set it to the redux
-  //This is needed as redux states are refreshed so I have set it to local Storage and got it back using getItem
-  // useEffect(() => {
-  //   const storedUserName = localStorage.getItem("userName");
-  //   const storedAmount = localStorage.getItem("amount");
-  //   const storedTime = localStorage.getItem("time");
-  //   const storedStatus = localStorage.getItem("status");
-
-  //   if (storedUserName) {
-  //     dispatch(
-  //       setLub({
-  //         userName: storedUserName,
-  //         amount: storedAmount,
-  //         time: storedTime,
-  //         status: storedStatus,
-  //       })
-  //     );
-  //   }
-  // }, [dispatch]);
 
   useEffect(() => {
     //localStorage can only store string key-value pairs.\
@@ -110,7 +77,7 @@ const AdminDash = () => {
       </div>
       <div className="w-full rounded-lg p-8 bg-white shadow-sm">
         <h1 className="text-secondary">Table Template</h1>
-        <div class="container mx-auto">
+        <div class="mx-auto">
           <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
             <div class="inline-block min-w-full rounded-lg overflow-hidden">
               <table class="min-w-full leading-normal border rounded-md">
@@ -197,9 +164,11 @@ const AdminDash = () => {
           <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">1</span> to{" "}
-                <span className="font-medium">10</span> of{" "}
-                <span className="font-medium">97</span> results
+                Showing <span className="font-medium">{startIndex + 1}</span> to{" "}
+                <span className="font-medium">
+                  {endIndex > lubCount ? lubCount : endIndex}
+                </span>{" "}
+                of <span className="font-medium">{lubCount}</span> results
               </p>
             </div>
             <div>
